@@ -42,34 +42,44 @@ class Point
     /**
      * @return string
      */
-    protected function getEscapedMeasurement()
-    {
-        $measurement = trim($this->measurement, ' "\'');
-        $finalString = str_replace([',', '='], ['\,', '\='], $measurement);
-        return $finalString;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getEscapedFieldSet()
+    protected function getEscapedFields()
     {
         $escapedFiledSet = [];
         foreach ($this->fieldSet as $fieldKey => $fieldValue) {
-            $escapedFiledSet[] = $this->escapeFieldKey($fieldKey) . '=' . $this->escapeFieldValue($fieldValue);
+            $fieldKey = $this->escapeString($fieldKey);
+            $fieldValue = $this->escapeFieldValue($fieldValue);
+            $escapedFiledSet[$fieldKey] = $fieldKey . '=' . $fieldValue;
         }
         ksort($escapedFiledSet);
         return implode(',', $escapedFiledSet);
     }
 
     /**
-     * @param $fieldKey
      * @return string
      */
-    protected function escapeFieldKey($fieldKey)
+    protected function getEscapedTags()
     {
-        $fieldKey = trim($fieldKey, ' "\'');
-        $finalString = str_replace([',', '=', ' '], ['\,', '\=', '\ '], $fieldKey);
+        if (empty($this->tagSet)) {
+            return '';
+        }
+        $escapedTagSet = [];
+        foreach ($this->tagSet as $tagKey => $tagValue) {
+            $tagKey = $this->escapeString($tagKey);
+            $tagValue = $this->escapeString($tagValue);
+            $escapedTagSet[$tagKey] = $tagKey . '=' . $tagValue;
+        }
+        ksort($escapedTagSet);
+        return implode(',', $escapedTagSet);
+    }
+
+    /**
+     * @param $string
+     * @return string
+     */
+    protected function escapeString($string)
+    {
+        $string = trim($string, ' "\'');
+        $finalString = str_replace([',', '=', ' '], ['\,', '\=', '\ '], $string);
         return $finalString;
     }
 
@@ -95,46 +105,11 @@ class Point
     /**
      * @return string
      */
-    protected function getEscapedTagSet()
-    {
-        if (empty($this->tagSet)) {
-            return '';
-        }
-        $escapedTagSet = [];
-        foreach ($this->tagSet as $tagKey => $tagValue) {
-            $escapedTagSet[] = $this->escapeTagKey($tagKey) . '=' . $this->escapeTagValue($tagValue);
-        }
-        ksort($escapedTagSet);
-        return implode(',', $escapedTagSet);
-    }
-
-    /**
-     * @param $tagKey
-     * @return string
-     */
-    protected function escapeTagKey($tagKey)
-    {
-        $tagKey = trim($tagKey, ' "\'');
-        $finalString = str_replace([',', '=', ' '], ['\,', '\=', '\ '], $tagKey);
-        return $finalString;
-    }
-
-    /**
-     * @param $tagValue
-     * @return string
-     */
-    protected function escapeTagValue($tagValue)
-    {
-        $tagValue = trim($tagValue, ' "\'');
-        $finalString = str_replace([',', '=', ' '], ['\,', '\=', '\ '], $tagValue);
-        return $finalString;
-    }
-
-    /**
-     * @return string
-     */
     protected function getEscapedTimestamp()
     {
+        if (is_null($this->time)) {
+            return '';
+        }
         return $this->time->getTimestamp() . '000000000';
     }
 
@@ -151,18 +126,18 @@ class Point
      */
     public function getLineProtocol()
     {
-        $measurementString = $this->getEscapedMeasurement();
-        $tagString = $this->getEscapedTagSet();
-        $fieldString = $this->getEscapedFieldSet();
-        $timestampString = $this->getEscapedTimestamp();
+        $measurement = $this->escapeString($this->measurement);
+        $tags = $this->getEscapedTags();
+        $fields = $this->getEscapedFields();
+        $timestamp = $this->getEscapedTimestamp();
 
-        $finalString = $measurementString;
-        if ($tagString) {
-            $finalString .= ',' . $tagString;
+        $finalString = $measurement;
+        if ($tags) {
+            $finalString .= ',' . $tags;
         }
-        $finalString .= ' ' . $fieldString;
-        if ($timestampString) {
-            $finalString .= ' ' . $timestampString;
+        $finalString .= ' ' . $fields;
+        if ($timestamp) {
+            $finalString .= ' ' . $timestamp;
         }
         return $finalString;
     }
