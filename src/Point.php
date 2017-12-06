@@ -98,6 +98,7 @@ class Point
         if (is_int($fieldValue) or is_float($fieldValue)) {
             return $fieldValue;
         }
+        $fieldValue = trim($fieldValue, ' "\'');
         return '"' . str_replace(['"'], ['\"'], $fieldValue) . '"';
     }
 
