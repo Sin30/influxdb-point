@@ -1,0 +1,28 @@
+{
+  "name": "sin30/influxdb-point",
+  "type": "library",
+  "description": "Generate Influxdb Line Protocol string for points.",
+  "keywords": ["influxdb", "point", "protocol"],
+  "license": "MIT",
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Sin30\\InfluxDB\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Sin30\\InfluxDB\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
