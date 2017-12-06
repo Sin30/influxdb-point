@@ -95,8 +95,7 @@ class Point
         if (is_bool($fieldValue)) {
             return $fieldValue ? 'true' : 'false';
         }
-        if (is_int($fieldValue) or is_float($fieldValue))
-        {
+        if (is_int($fieldValue) or is_float($fieldValue)) {
             return $fieldValue;
         }
         return '"' . str_replace(['"'], ['\"'], $fieldValue) . '"';
@@ -126,16 +125,13 @@ class Point
      */
     public function getLineProtocol()
     {
-        $measurement = $this->escapeString($this->measurement);
+        $finalString = $this->escapeString($this->measurement);
         $tags = $this->getEscapedTags();
-        $fields = $this->getEscapedFields();
-        $timestamp = $this->getEscapedTimestamp();
-
-        $finalString = $measurement;
         if ($tags) {
             $finalString .= ',' . $tags;
         }
-        $finalString .= ' ' . $fields;
+        $finalString .= ' ' . $this->getEscapedFields();
+        $timestamp = $this->getEscapedTimestamp();
         if ($timestamp) {
             $finalString .= ' ' . $timestamp;
         }

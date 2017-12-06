@@ -109,4 +109,32 @@ class PointTest extends TestCase
         $actual = $point->getLineProtocol();
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @test
+     */
+    public function itShouldRemoveUnwantedCharsInMeasurementTagKeyTagValueAndFieldKey()
+    {
+        $point = new Point('\'" weather "\'',
+            ['\'" humidity "\'' => '20%'],
+            ['\'" location "\'' => '\'" us-midwest "\'']
+        );
+        $expected = 'weather,location=us-midwest humidity="20%"';
+        $actual = $point->getLineProtocol();
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldEscapeUnwantedCharsInMeasurementTagKeyTagValueAndFieldKey()
+    {
+        $point = new Point('w,e=a ther',
+            ['h,u=m idity' => '20%'],
+            ['l,o=c ation' => 'us-m,i=d west']
+        );
+        $expected = 'w\,e\=a\ ther,l\,o\=c\ ation=us-m\,i\=d\ west h\,u\=m\ idity="20%"';
+        $actual = $point->getLineProtocol();
+        $this->assertEquals($expected, $actual);
+    }
 }
