@@ -1,17 +1,6 @@
 language: php
 
-sudo: required
-
 php:
   - 7.0
   - 7.1
   - 7.2
-
-install:
-  - travis_retry composer install --no-interaction
-
-matrix:
-    fast_finish: true
-
-script:
-  - phpunit --no-coverage
